@@ -4,10 +4,12 @@ from simple_linear_regr_utils import generate_data, evaluate
 
 class SimpleLinearRegression:
     def __init__(self, iterations=15000, lr=0.1):
-        self.iterations = iterations # number of iterations the fit method will be called
-        self.lr = lr # The learning rate
-        self.losses = [] # A list to hold the history of the calculated losses
-        self.W, self.b = None, None # the slope and the intercept of the model
+        self.iterations = (
+            iterations  # number of iterations the fit method will be called
+        )
+        self.lr = lr  # The learning rate
+        self.losses = []  # A list to hold the history of the calculated losses
+        self.W, self.b = None, None  # the slope and the intercept of the model
 
     def __loss(self, y, y_hat):
         """
@@ -18,7 +20,7 @@ class SimpleLinearRegression:
             loss: the sum of squared error
 
         """
-        #ToDO calculate the loss. use the sum of squared error formula for simplicity
+        # ToDO calculate the loss. use the sum of squared error formula for simplicity
         loss = None
 
         self.losses.append(loss)
@@ -30,7 +32,7 @@ class SimpleLinearRegression:
         :param X: The training set
         """
         weights = np.random.normal(size=X.shape[1] + 1)
-        self.W = weights[:X.shape[1]].reshape(-1, X.shape[1])
+        self.W = weights[: X.shape[1]].reshape(-1, X.shape[1])
         self.b = weights[-1]
 
     def __sgd(self, X, y, y_hat):
@@ -48,7 +50,6 @@ class SimpleLinearRegression:
         #  ToDO update the self.W and self.b using the learning rate and the values for dW and db
         self.W = None
         self.b = None
-
 
     def fit(self, X, y):
         """
@@ -75,7 +76,7 @@ class SimpleLinearRegression:
         :return:
             y_hat: the predicted output
         """
-        #ToDO calculate the predicted output y_hat. remember the function of a line is defined as y = WX + b
+        # ToDO calculate the predicted output y_hat. remember the function of a line is defined as y = WX + b
         y_hat = None
         return y_hat
 
@@ -83,6 +84,6 @@ class SimpleLinearRegression:
 if __name__ == "__main__":
     X_train, y_train, X_test, y_test = generate_data()
     model = SimpleLinearRegression()
-    model.fit(X_train,y_train)
+    model.fit(X_train, y_train)
     predicted = model.predict(X_test)
     evaluate(model, X_test, y_test, predicted)

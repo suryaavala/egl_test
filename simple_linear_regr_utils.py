@@ -3,6 +3,7 @@ from sklearn.datasets import load_diabetes
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 
+
 def generate_data():
     """
     Generates a random dataset from a normal distribution.
@@ -25,15 +26,17 @@ def generate_data():
     diabetes_X_test = diabetes_X[-20:]
 
     # Split the targets into training/testing sets
-    diabetes_y_train = diabetes_y[:-20].reshape(-1,1)
-    diabetes_y_test = diabetes_y[-20:].reshape(-1,1)
+    diabetes_y_train = diabetes_y[:-20].reshape(-1, 1)
+    diabetes_y_test = diabetes_y[-20:].reshape(-1, 1)
 
-    print(f"# Training Samples: {len(diabetes_X_train)}; # Test samples: {len(diabetes_X_test)};")
+    print(
+        f"# Training Samples: {len(diabetes_X_train)}; # Test samples: {len(diabetes_X_test)};"
+    )
     return diabetes_X_train, diabetes_y_train, diabetes_X_test, diabetes_y_test
 
 
 def evaluate(model, X, y, y_predicted):
-    """ Calculates and prints evaluation metrics. """
+    """Calculates and prints evaluation metrics."""
     # The coefficients
     print(f"Slope: {model.W}; Intercept: {model.b}")
     # The mean squared error
