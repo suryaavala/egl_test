@@ -1,4 +1,4 @@
-.PHONY: check-all check-lint check-security check-types clean docker-entry-bash setup-dev install-git-hooks install-pipenv install-py-requirements install-py-dev-req install-py-dev-as-sys load-pipenv-shell setup-dev pytest test-coverage test-serving test-local test-local-docker train server-build serve server-logs server-stop-clean
+.PHONY: check-style-all check-lint check-security check-types clean docker-entry-bash setup-dev install-git-hooks install-pipenv install-py-requirements install-py-dev-req install-py-dev-as-sys load-pipenv-shell setup-dev pytest test-coverage test-serving test-local test-local-docker train server-build serve server-logs server-stop-clean
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -79,15 +79,15 @@ check-types:
 	mypy linear_regressor
 
 ## checks code for linting, security and type errors
-check-all: check-lint check-types check-security
+check-style-all: check-lint check-types check-security
 
 ## unit tests code with pytest
 pytest:
-	pytest -vvv --capture=tee-sys --junitxml=pytest_report.xml
+	pytest -vvv --capture=tee-sys
 
 ## check code coverage quickly with the default Python
 test-coverage:
-	coverage run -m pytest
+	coverage run -m pytest -vvv --capture=tee-sys
 	coverage report -m
 	coverage html
 
@@ -96,10 +96,10 @@ test-serving: server-stop-clean serve
 	./scripts/test_local_server.sh "0.0.0.0" "$(PORT)"
 	make server-stop-clean
 
-## runs check-all, pytest, coverage, test-serving; use when testing locally
-test-local: check-all pytest test-coverage test-serving
+## runs check-style-all, pytest, coverage, test-serving; use when testing locally
+test-local: check-style-all pytest test-coverage test-serving
 
-## runs check-all, pytest, coverage, test-serving; use when testing locally in a docker
+## runs check-style-all, pytest, coverage, test-serving; use when testing locally in a docker
 test-local-docker:
 	docker build -t builder --file builder.Dockerfile .
 	-docker run -i \

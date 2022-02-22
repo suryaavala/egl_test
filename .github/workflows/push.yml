@@ -1,0 +1,41 @@
+name: Linear Regressor E2E
+
+on: [push]
+
+jobs:
+  package-install:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.9.10
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Linear Regressor
+        run: |
+          make install
+          python3 -c "import linear_regressor; print(linear_regressor.__version__)"
+
+  style-checks:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.9.10
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: |
+          make setup-dev
+      - name: Run Style Checks
+        run: |
+          make check-style-all
+
+  pytest-coverage:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.9.10
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: |
+          make setup-dev
+      - name: Run Tests and Coverage
+        run: |
+          make test-coverage

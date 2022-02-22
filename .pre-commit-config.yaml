@@ -28,3 +28,17 @@ repos:
         pass_filenames: false
         entry: pipenv run pipenv-setup sync
         files: 'Pipfile(\.lock)?|setup'
+  - repo: local
+    hooks:
+      - id: style-checks
+        name: style-checks
+        language: system
+        pass_filenames: false
+        entry: pipenv run make check-style-all
+  - repo: local
+    hooks:
+      - id: pytest-coverage
+        name: pytest-coverage
+        language: system
+        pass_filenames: false
+        entry: pipenv run make test-coverage
