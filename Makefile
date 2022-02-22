@@ -1,4 +1,4 @@
-.PHONY: check-style-all check-lint check-security check-types clean docker-entry-bash setup-dev install-git-hooks install-pipenv install-py-requirements install-py-dev-req install-py-dev-as-sys load-pipenv-shell setup-dev pytest test-coverage test-serving test-local test-local-docker train server-build serve server-logs server-stop-clean
+.PHONY: check-style-all check-lint check-security check-types clean docker-entry-bash setup-dev install-git-hooks install-pipenv install-py-requirements install-py-dev-req install-py-dev-as-sys load-pipenv-shell setup-ci-dev setup-dev pytest test-coverage test-serving test-local test-local-docker train server-build serve server-logs server-stop-clean
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -16,6 +16,9 @@ PORT = 5000
 
 ## Setup Local Dev environment
 setup-dev: install-pipenv install-py-dev-req load-pipenv-shell install-git-hooks
+
+## Setup CI dev environment
+setup-ci-dev: install-pipenv install-py-dev-as-sys
 
 ## Install Git Hooks
 install-git-hooks:
