@@ -1,5 +1,5 @@
 import numpy as np
-from simple_linear_regr_utils import generate_data, evaluate
+from linear_regressor.utils import generate_data, evaluate
 
 
 class SimpleLinearRegression:
@@ -45,8 +45,8 @@ class SimpleLinearRegression:
             sets updated W and b to the instance Object (self)
         """
         # ToDo calculate dW & db.
-        dW = None
-        db = None
+        dW = None  # noqa
+        db = None  # noqa
         #  ToDO update the self.W and self.b using the learning rate and the values for dW and db
         self.W = None
         self.b = None
