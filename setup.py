@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 setup(
     packages=find_packages(exclude=("tests",)),
     install_requires=[
+        "click==8.0.4",
         "cycler==0.11.0; python_version >= '3.6'",
         "fonttools==4.29.1; python_version >= '3.7'",
         "joblib==1.1.0; python_version >= '3.6'",
