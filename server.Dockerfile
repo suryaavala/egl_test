@@ -19,4 +19,4 @@ COPY main.py /app/main.py
 
 
 # $PORT is set by google cloud run
-CMD exec python3 main.py serve --host="0.0.0.0" --port=$PORT --with-gunicorn
+CMD exec python3 main.py serve --host="0.0.0.0" --port=$PORT --server "gunicorn"

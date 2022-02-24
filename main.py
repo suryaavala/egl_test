@@ -1,10 +1,13 @@
 import click
 from linear_regressor.linear_regressor import SimpleLinearRegression
 from linear_regressor.utils import generate_data, evaluate, save_artefact, get_abs_path
-
+from multiprocessing import cpu_count
 import logging
 from logging.config import fileConfig
 import time
+from linear_regressor.api import app
+from linear_regressor.server import start
+
 
 fileConfig(get_abs_path("logging_config.ini"), disable_existing_loggers=False)
 logging.Formatter.converter = time.gmtime
@@ -59,6 +62,54 @@ def train(
     save_artefact(model, model_save_path)
     CLI_LOGGER.info(f"Model saved to {get_abs_path(model_save_path)}")
     return None
+
+
+@cli.command()
+@click.option(
+    "--host",
+    type=str,
+    default="0.0.0.0",  # nosec
+    help="server host.",
+    show_default=True,
+)
+@click.option("--port", type=int, default=5000, help="server port", show_default=True)
+@click.option("--debug", is_flag=True, help="Enable debug mode")
+@click.option(
+    "--server",
+    default="gunicorn",
+    type=click.Choice(["gunicorn", "flask"], case_sensitive=False),
+    help="Server type to use: gunicorn for prod & flask dev server",
+)
+@click.option(
+    "--workers",
+    type=int,
+    default=(cpu_count() * 2) + 1,
+    help="Number of workers (when using --server gunicorn)",
+)
+def serve(host: str, port: int, server: str, workers: int, debug: bool):
+    """Server linear_regressor application depending on command line arguments
+
+    Args:\n
+        host (str): host address to start the server at.
+                    Defaults to "0.0.0.0".\n
+        port (int): port number for the server to listen at.
+                    Defaults to 5000.\n
+        with_gunicorn (bool): use gunicorn instead of flask dev server.
+                               Defaults to False.\n
+        workers (int): number of workers to use when using gunicorn.
+                       Defaults to (cpu_count() * 2) + 1.\n
+        debug (bool): enable debug mode.\n
+                        Defaults to False.
+    """
+    CLI_LOGGER.info(f"Starting {server} server at {host}:{port}")
+    start(
+        app=app,
+        host=host,
+        port=port,
+        server=server,
+        workers=workers,
+        debug=debug,
+    )
 
 
 if __name__ == "__main__":

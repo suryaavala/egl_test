@@ -9,7 +9,6 @@ repos:
         args: ["--django"]
       - id: detect-aws-credentials
         args: ["--allow-missing-credentials"]
-      - id: check-yaml
       - id: detect-private-key
   - repo: https://github.com/psf/black
     rev: 22.1.0 # Replace by any tag/version: https://github.com/psf/black/tags
@@ -42,3 +41,10 @@ repos:
         language: system
         pass_filenames: false
         entry: pipenv run make test-coverage
+  - repo: local
+    hooks:
+      - id: test-server
+        name: test-server
+        language: system
+        pass_filenames: false
+        entry: make test-serving
