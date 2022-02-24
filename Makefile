@@ -1,4 +1,4 @@
-.PHONY: check-style-all check-lint check-security check-types clean docker-entry-bash setup-dev install-git-hooks install-pipenv install-py-requirements install-py-dev-req install-py-dev-as-sys load-pipenv-shell setup-ci-dev setup-dev pytest test-coverage test-serving test-local test-local-docker train server-build serve server-logs server-stop-clean
+.PHONY: check-style-all check-lint check-security check-types clean docker-entry-bash setup-dev install-git-hooks install-pipenv install-py-requirements install-py-dev-req install-py-dev-as-sys load-pipenv-shell setup-ci-dev setup-dev pytest test-coverage test-serving test-local test-local-docker train train-local server-build serve server-logs server-stop-clean
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -112,9 +112,14 @@ test-local-docker:
 
 	make test-serving
 
-## trains linear_regressor model
+## train linear_regressor model locally
+train-local: install-pipenv install-py-dev-req
+	pipenv run python -m main.py train
+
+## trains linear_regressor model in a docker container
 train:
-	PYTHONPATH=. pipenv run python3 main.py train
+	docker build -t builder --file builder.Dockerfile .
+	-docker run -it --mount type=bind,source=$(CURDIR),target=/app builder:latest python3 main.py train
 
 ## builds linear_regressor server image as linear_regressor_server:latest
 server-build:
