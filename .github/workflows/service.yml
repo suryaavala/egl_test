@@ -9,7 +9,7 @@ on:
       - completed
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-  SERVICE: linear_regressor_server
+  SERVICE: linear-regressor-server
   REGION: australia-southeast2
   CLOUD_RUN_IMAGE_W_TAG: "$REGION-docker.pkg.dev/gitlab-elendil/linear-regressor/linear_regressor_server:${{  github.sha }}"
 
@@ -44,11 +44,19 @@ jobs:
 
       - name: Deploy to Cloud Run
         id: deploy
-        uses: google-github-actions/deploy-cloudrun@v0
-        with:
-          service: ${{ env.SERVICE }}
-          image: ${{ env.CLOUD_RUN_IMAGE_W_TAG }}
-          region: ${{ env.REGION }}
+        run: |-
+          gcloud run deploy "${{ env.SERVICE }}" \
+            --image "${{ env.CLOUD_RUN_IMAGE_W_TAG }}" \
+            --platform managed \
+            --region "${{ env.REGION }}" \
+            --allow-unauthenticated
 
-      - name: Show Output
-        run: echo ${{ steps.deploy.outputs.url }}
+      - name: Test Ping
+        run: |-
+          CLOUDRUN_URL=$(gcloud run services describe \
+            "${{ env.SERVICE }}" \
+            --platform managed \
+            --region "${{ env.REGION }}" \
+            --format 'value(status.url)' \
+            --project "${{ env.PROJECT_ID }}")
+          curl --location --request GET "$CLOUDRUN_URL/ping" | grep -q "pong"
