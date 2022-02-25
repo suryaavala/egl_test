@@ -32,7 +32,9 @@ jobs:
           project_id: "${{ env.PROJECT_ID }}"
 
       - name: Authorize Docker push
-        run: gcloud auth configure-docker
+        run: |-
+          gcloud auth configure-docker
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
       - name: Build and Push Server Container
         run: |-
