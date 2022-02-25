@@ -50,7 +50,7 @@ function run_tests {
         test_batch || echo "BATCH_PREDICTIONS test failed!"
         test_stream || echo "STREAM_PREDICTIONS test failed!"
 
-        if [ -z "${HELLO_TEST}" ] || [ -z "${PING_TEST-}" ] || [ -z "${BATCH_PREDICTIONS_TEST-}" ]; then
+        if [ -z "${HELLO_TEST}" ] || [ -z "${PING_TEST-}" ] || [ -z "${BATCH_PREDICTIONS_TEST-}" ] || [ -z "${STREAM_PREDICTIONS_TEST-}" ]; then
             echo "One of the tests failed"
             echo "HELLO = ${HELLO}"
             echo "PING = ${PING}"
