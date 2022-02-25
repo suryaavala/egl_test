@@ -1,0 +1,52 @@
+name: Build and Deploy to Google Cloud Run
+
+on:
+  workflow_run:
+    workflows:
+      - Linear Regressor Tests
+    branches: main
+    types:
+      - completed
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+  SERVICE: linear_regressor_server
+  REGION: australia-southeast2
+  CLOUD_RUN_IMAGE_W_TAG: "$REGION-docker.pkg.dev/gitlab-elendil/linear-regressor/linear_regressor_server:${{  github.sha }}"
+
+jobs:
+  build-push-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: "actions/checkout@v2"
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v0"
+        with:
+          project_id: "${{ env.PROJECT_ID }}"
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
+      - name: Build and Push Server Container
+        run: |-
+          gcloud components update --quiet
+          docker build -t "${{ env.CLOUD_RUN_IMAGE_W_TAG }}" -f server.Dockerfile .
+          docker push "${{ env.CLOUD_RUN_IMAGE_W_TAG }}"
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v0
+        with:
+          service: ${{ env.SERVICE }}
+          image: ${{ env.CLOUD_RUN_IMAGE_W_TAG }}
+          region: ${{ env.REGION }}
+
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}
